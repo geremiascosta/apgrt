@@ -1,0 +1,165 @@
+aws --endpoint-url=http://localhost:4572 s3 cp api_create.zip s3://my-bucket-lambda
+aws --endpoint-url=http://localhost:4572 s3 cp api_update.zip s3://my-bucket-lambda
+aws --endpoint-url=http://localhost:4572 s3 cp api_find.zip s3://my-bucket-lambda
+aws --endpoint-url=http://localhost:4572 s3 cp api_delete.zip s3://my-bucket-lambda
+
+aws --endpoint-url=http://localhost:4574 lambda create-function 
+--region us-east-1 
+--function-name lambda_create_retro 
+--runtime python3.7
+--handler agendamento_create/venv/Include/application.lambda_handler 
+--memory-size 128 
+--zip-file fileb://./api_create.zip 
+--role arn:aws:iam::000000000000:role/UsersManageOwnCredentials
+
+aws --endpoint-url=http://localhost:4574 lambda create-function 
+--region us-east-1 
+--function-name lambda_update_retro
+--runtime python3.7 
+--handler agendamento_update/venv/Include/application.lambda_handler 
+--memory-size 128 
+--zip-file fileb://./api_update.zip 
+--role arn:aws:iam::000000000000:role/UsersManageOwnCredentials
+
+aws --endpoint-url=http://localhost:4574 lambda create-function 
+--region us-east-1 
+--function-name lambda_find_retro 
+--runtime python3.7 
+--handler agendamento_find/venv/Include/application.lambda_handler 
+--memory-size 128 
+--zip-file fileb://./api_find.zip 
+--role arn:aws:iam::000000000000:role/UsersManageOwnCredentials
+
+aws --endpoint-url=http://localhost:4574 lambda create-function 
+--region us-east-1 
+--function-name lambda_delete_retro 
+--runtime python3.7 
+--handler agendamento_delete/venv/Include/application.lambda_handler 
+--memory-size 128 
+--zip-file fileb://./api_delete.zip 
+--role arn:aws:iam::000000000000:role/UsersManageOwnCredentials
+
+
+#Criando API REST
+aws --endpoint-url=http://localhost:4567 apigateway create-rest-api 
+--region us-east-1 
+--name 'Api-Agendamentos'
+
+#Criando recursos para API
+
+aws --endpoint-url=http://localhost:4567  apigateway get-resources 
+--region us-east-1 
+--rest-api-id api_id
+
+aws --endpoint-url=http://localhost:4567 apigateway create-resource 
+--region us-east-1 
+--rest-api-id api_id 
+--parent-id id_recurso_pai 
+--path-part "agendamento"
+
+aws --endpoint-url=http://localhost:4567 apigateway create-resource 
+--region us-east-1 
+--rest-api-id api_id 
+--parent-id id_recurso_pai 
+--path-part "agendamento/findByIdAgendamento"
+
+
+#Criando methods 
+
+aws --endpoint-url=http://localhost:4567  apigateway put-method 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method POST 
+--request-parameters "method.request.path.agendamento=true" 
+--authorization-type "NONE"
+
+aws --endpoint-url=http://localhost:4567  apigateway put-method 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method PUT 
+--request-parameters "method.request.path.agendamento=true" 
+--authorization-type "NONE"
+
+aws --endpoint-url=http://localhost:4567  apigateway put-method 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method DELETE 
+--request-parameters "method.request.path.agendamento=true" 
+--authorization-type "NONE"
+
+aws --endpoint-url=http://localhost:4567  apigateway put-method 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method GET 
+--request-parameters "method.request.path.findByIdAgendamento=true" 
+--authorization-type "NONE"
+
+
+#METHODS INTEGRATION
+aws --endpoint-url=http://localhost:4567 apigateway put-integration 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method POST 
+--type AWS_PROXY 
+--integration-http-method POST 
+--uri arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:lambda_find/invocations 
+--passthrough-behavior WHEN_NO_MATCH
+
+
+aws --endpoint-url=http://localhost:4567 apigateway put-integration 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method PUT 
+--type AWS_PROXY 
+--integration-http-method POST 
+--uri arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:lambda_find/invocations 
+--passthrough-behavior WHEN_NO_MATCH
+
+
+aws --endpoint-url=http://localhost:4567 apigateway put-integration 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method DELETE 
+--type AWS_PROXY 
+--integration-http-method POST 
+--uri arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:lambda_find/invocations 
+--passthrough-behavior WHEN_NO_MATCH
+
+aws --endpoint-url=http://localhost:4567 apigateway put-integration 
+--region us-east-1 
+--rest-api-id api_id 
+--resource-id id_recurso 
+--http-method GET 
+--type AWS_PROXY 
+--integration-http-method POST 
+--uri arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:lambda_find/invocations 
+--passthrough-behavior WHEN_NO_MATCH
+
+#Deploy - Stage
+aws --endpoint-url=http://localhost:4567  apigateway create-deployment 
+--region us-east-1 
+--rest-api-id api_id 
+--stage-name dev
+
+Endpoint: http://localhost:4567/restapis/api_id/dev/_user_request_/recurso
+
+
+
+
+
+
+
+
+
+
+
+
+
+

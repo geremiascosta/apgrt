@@ -1,0 +1,1 @@
+{"AWSTemplateFormatVersion":"2010-09-09","Resources":{"S3Bucket":{"Type":"AWS::S3::Bucket","Properties":{"BucketName":"my-bucket-lambda-g1","PublicAccessBlockConfiguration":{"BlockPublicAcls":true,"BlockPublicPolicy":true,"IgnorePublicAcls":true,"RestrictPublicBuckets":true}},"DeletionPolicy":"Retain"}}}

@@ -1,0 +1,132 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {},
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "lambdaDemoRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "lambda_policy_demo",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "*",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "LambdaCreate": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "lambda_create",
+        "Description":"Responsável pela criacao dos objetos",
+        "Handler": "agendamento_create/venv/Include/application.lambda_handler",
+        "MemorySize" : 128,
+        "Runtime": "python3.8",
+        "Timeout": 25,
+        "Role": {
+          "Fn::GetAtt": [
+            "lambdaDemoRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "my-bucket-lambda",
+          "S3Key": "api_create.zip"
+        }
+      }
+    },
+    "LambdaUpdate": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "lambda_update",
+        "Description":"Responsável pela atualizacao dos objetos",
+        "Handler": "agendamento_update/venv/Include/application.lambda_handler",
+        "MemorySize" : 128,
+        "Runtime": "python3.8",
+        "Timeout": 25,
+        "Role": {
+          "Fn::GetAtt": [
+            "lambdaDemoRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "my-bucket-lambda",
+          "S3Key": "api_update.zip"
+        }
+      }
+    },
+    "LambdaFind": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "lambda_find",
+        "Description":"Responsável pela pesquisa",
+        "Handler": "agendamento_find/venv/Include/application.lambda_handler",
+        "MemorySize" : 128,
+        "Runtime": "python3.8",
+        "Timeout": 25,
+        "Role": {
+          "Fn::GetAtt": [
+            "lambdaDemoRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "my-bucket-lambda",
+          "S3Key": "api_find.zip"
+        }
+      }
+    },
+    "LambdaDelete": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "lambda_delete",
+        "Description":"Responsável pela pesquisa",
+        "Handler": "agendamento_delete/venv/Include/application.lambda_handler",
+        "MemorySize" : 128,
+        "Runtime": "python3.8",
+        "Timeout": 25,
+        "Role": {
+          "Fn::GetAtt": [
+            "lambdaDemoRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "my-bucket-lambda",
+          "S3Key": "api_delete.zip"
+        }
+      }      
+    }
+  },
+  "Outputs": {}
+}
