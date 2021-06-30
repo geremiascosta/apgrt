@@ -1,0 +1,52 @@
+O que é o Kafka?
+
+Apache Kafka é uma plataforma de streaming de eventos distribuída de código aberto
+usado por milhares de empresas para pipelines de dados de alto desempenho,
+streaming analytics, integração de dados e aplicativos de missão crítica.
+
+Por que precisamos do Apache Kafka?
+
+Eventos
+	- Sistemas que precisam se comunicar com outros sistemas
+	- Dispositivos / IOT
+	- Monitoramento
+	- Alarmes
+
+Historico dos eventos
+	- Armazenar todos os dados do evento
+
+Capacidades:
+	- Alto Throughput
+	- Baixa latências abaixo de 2ms
+	- Escalável
+	- Armazenamento permanente
+	- Alta disponibilidade
+	
+Empresas que utilizam Kafka:
+	- Netflix
+	- LinkedIn
+	- Uber
+	- Twitter
+	- Spotify
+	- Paypal
+	- Bancos
+	
+O que é um tópico?
+	- Stream de dados que atuam como um banco de dados
+	- Todos os dados ficam armazenados, ou seja, cada tópico tem seu local para armazenar o seus dados
+	- Um tópico possui diversas partições
+	
+Kafka Cluster
+	- Conjunto de Brokers
+	- Cada Broker é um servidor
+	- Cada Broker é responsável por armazenar os dados de um partição
+	- Cada partição de um tópico está distribuído em diferentes brokers
+	
+Reflication Factor:
+	- Quando você cria o seu tópico, é necessario setar o replication factor, isso para informar quantas replicas você quer que uma partição tenha.
+	- A replicas precisam ser em Broker diferentes
+		
+
+
+
+	
